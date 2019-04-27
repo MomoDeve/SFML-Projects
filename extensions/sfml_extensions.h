@@ -47,6 +47,7 @@ namespace esf
 		double delta = 0.001;
 	public:
 		sf::Color AxisColor = sf::Color::Red;
+		sf::Color lineColor = sf::Color::Green;
 		bool displayGrid = true;
 		bool displayAxis = true;
 		double xScale = 1.0;

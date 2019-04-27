@@ -149,7 +149,7 @@ namespace esf
 					lineEnd.y < grid.elementSize * grid.getColumns())
 				{
 					Line line = Line(lineBegin, lineEnd);
-					line.setColor(sf::Color::Green);
+					line.setColor(lineColor);
 					window->draw(line);
 				}
 			}
