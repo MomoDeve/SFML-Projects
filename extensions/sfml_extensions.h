@@ -1,9 +1,8 @@
 #include <SFML/Graphics.hpp>
+#include <cmath>
+#include <functional>
+#include <algorithm>
 #pragma once
-
-#ifndef size_t
-#define size_t unsigned int
-#endif
 
 namespace esf
 {
@@ -35,5 +34,31 @@ namespace esf
 		sf::Vector2u getSize();
 		size_t getColumns();
 		size_t getRows();
+	};
+
+
+
+	class GraphBuilder
+	{
+		Grid grid;
+		sf::Vector2u origin;
+		std::function<double(double)> func;
+		bool functionSet = false;
+		double delta = 0.001;
+	public:
+		sf::Color AxisColor = sf::Color::Red;
+		bool displayGrid = true;
+		bool displayAxis = true;
+		double xScale = 1.0;
+		double yScale = 1.0;
+
+		GraphBuilder(sf::RenderWindow* window, size_t scaleSize);
+		GraphBuilder(size_t xAxis, size_t yAxis, size_t scaleSize);
+		GraphBuilder(Grid grid);
+		void draw(sf::RenderWindow* window);
+		sf::Vector2u getOrigin();
+		void setOrigin(size_t rows, size_t columns);
+		void setFunction(std::function<double(double)> f);
+		void applyScale(double multiplier);
 	};
 }
