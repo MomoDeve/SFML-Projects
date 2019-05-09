@@ -42,9 +42,7 @@ namespace esf
 	{
 		Grid grid;
 		sf::Vector2u origin;
-		std::function<double(double)> func;
-		bool functionSet = false;
-		double delta = 0.001;
+		double delta;
 	public:
 		sf::Color AxisColor = sf::Color::Red;
 		sf::Color lineColor = sf::Color::Green;
@@ -52,6 +50,7 @@ namespace esf
 		bool displayAxis = true;
 		double xScale = 1.0;
 		double yScale = 1.0;
+		std::vector<std::function<double(double)> > functions;
 
 		GraphBuilder(sf::RenderWindow* window, size_t scaleSize);
 		GraphBuilder(size_t xAxis, size_t yAxis, size_t scaleSize);
@@ -59,7 +58,8 @@ namespace esf
 		void draw(sf::RenderWindow* window);
 		sf::Vector2u getOrigin();
 		void setOrigin(size_t rows, size_t columns);
-		void setFunction(std::function<double(double)> f);
 		void applyScale(double multiplier);
+		void zoom(int delta);
+		void fillWindow(sf::RenderWindow* window);
 	};
 }

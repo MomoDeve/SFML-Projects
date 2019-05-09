@@ -80,10 +80,10 @@ namespace esf
 		
 
 
-	GraphBuilder::GraphBuilder(sf::RenderWindow * window, size_t scaleSize) :
+	GraphBuilder::GraphBuilder(sf::RenderWindow* window, size_t scaleSize) :
 		GraphBuilder(Grid(window->getSize().x / scaleSize, window->getSize().y / scaleSize, scaleSize))
 	{
-
+		fillWindow(window);
 	}
 
 	GraphBuilder::GraphBuilder(size_t xAxis, size_t yAxis, size_t scaleSize) :
@@ -96,6 +96,7 @@ namespace esf
 		grid(grid)
 	{
 		this->grid.lineColor = sf::Color(255, 255, 255, 100);
+		delta = this->grid.elementSize / 10000.0;
 
 		origin = sf::Vector2u(
 			grid.position.x + grid.elementSize * (size_t)std::ceil(grid.getRows() / 2.0),
@@ -128,7 +129,7 @@ namespace esf
 			}
 		}
 
-		if (functionSet)
+		for(auto func : functions)
 		{
 			sf::Vector2u center(getOrigin());
 			double dx = -(double)center.x;
@@ -136,12 +137,12 @@ namespace esf
 			while (dx < grid.getRows())
 			{
 				double x = center.x + dx;
-				sf::Vector2i lineBegin(std::round(grid.position.x + x * grid.elementSize), std::round(grid.position.y + y * grid.elementSize));
+				sf::Vector2i lineBegin(grid.position.x + x * grid.elementSize, grid.position.y + y * grid.elementSize);
 				dx += delta;
 				x += delta;
 				y = center.y - yScale * func(xScale * dx);
 
-				sf::Vector2i lineEnd(std::round(grid.position.x + x * grid.elementSize), std::round(grid.position.y + y * grid.elementSize));
+				sf::Vector2i lineEnd(grid.position.x + x * grid.elementSize, grid.position.y + y * grid.elementSize);
 				
 				if (lineBegin.x > grid.position.x && 
 					lineBegin.y > grid.position.y &&
@@ -170,15 +171,35 @@ namespace esf
 		origin = sf::Vector2u(x, y);
 	}
 
-	void GraphBuilder::setFunction(std::function <double(double)> f)
-	{
-		func = f;
-		functionSet = true;
-	}
-
 	void GraphBuilder::applyScale(double multiplier)
 	{
-		xScale *= multiplier;
 		yScale *= multiplier;
+		xScale *= multiplier;
+	}
+
+	void GraphBuilder::zoom(int delta)
+	{
+		sf::Vector2u origin = getOrigin();
+		grid.elementSize = std::max(1, (int)grid.elementSize + delta);
+		setOrigin(origin.x, origin.y);
+	}
+
+	void GraphBuilder::fillWindow(sf::RenderWindow* window)
+	{
+		sf::Vector2i windowSize(window->getSize().x, window->getSize().y);
+
+		size_t rows = windowSize.x / grid.elementSize + 1;
+		size_t columns = windowSize.y / grid.elementSize + 1;
+
+		Grid newGrid(rows + rows % 2, columns + columns % 2, grid.elementSize);
+		newGrid.lineColor = grid.lineColor;
+
+		grid = newGrid;
+
+		origin.x = windowSize.x / 2;
+		origin.y = windowSize.y / 2;
+
+		grid.position.x = (windowSize.x - int(grid.elementSize * grid.getRows())) / 2;
+		grid.position.y = (windowSize.y - int(grid.elementSize * grid.getColumns())) / 2;
 	}
 }
