@@ -8,22 +8,21 @@
 
 //SFML Extensions Library required
 using namespace esf;
+using namespace std;
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Graph Builder");
 	window.setFramerateLimit(FRAMERATE);
 
-	size_t size = 20;
-	double mult = 1.05;
+	size_t size = 100;
+	int zoom = 1;
+	double scale = 1.05;
 
 	GraphBuilder builder(&window, size);
-	builder.setFunction([](double x) { return x; });
-	builder.displayGrid = false;
-
-	GraphBuilder extraBuilder(&window, size);
-	extraBuilder.setFunction([](double x) { return x * x; });
-	extraBuilder.displayGrid = false;
+	builder.functions.emplace_back([](double x) { return sin(x) * x; });
+	builder.displayGrid = true;
+	builder.lineColor = sf::Color::Cyan;
 
 	while (window.isOpen())
 	{
@@ -37,30 +36,28 @@ int main()
 			{
 				switch (event.key.code)
 				{
+				case sf::Keyboard::Num0:
+					builder.xScale *= scale;
+					break;
+				case sf::Keyboard::Num9:
+					builder.xScale *= 1 / scale;
+					break;
 				case sf::Keyboard::Equal:
-					builder.applyScale(mult);
+					builder.zoom(zoom);
+					//builder.fillWindow(&window);
 					break;
 				case sf::Keyboard::Hyphen:
-					builder.applyScale(1 / mult);
+					builder.zoom(-zoom);
+					//builder.fillWindow(&window);
 					break;
 				case sf::Keyboard::BackSpace:
 					builder.yScale *= -1;
-					break;
-				case sf::Keyboard::Num0:
-					extraBuilder.applyScale(mult);
-					break;
-				case sf::Keyboard::Num9:
-					extraBuilder.applyScale(1 / mult);
-					break;
-				case sf::Keyboard::Num8:
-					extraBuilder.yScale *= -1;
 					break;
 				}
 			}
 		}
 		window.clear();
 		builder.draw(&window);
-		extraBuilder.draw(&window);
 		window.display();
 	}
 	return 0;
