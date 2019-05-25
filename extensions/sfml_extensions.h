@@ -41,8 +41,9 @@ namespace esf
 	class GraphBuilder
 	{
 		Grid grid;
-		sf::Vector2u origin;
+		sf::Vector2i origin;
 		double delta;
+		sf::RenderWindow* window;
 	public:
 		sf::Color AxisColor = sf::Color::Red;
 		sf::Color lineColor = sf::Color::Green;
@@ -53,13 +54,13 @@ namespace esf
 		std::vector<std::function<double(double)> > functions;
 
 		GraphBuilder(sf::RenderWindow* window, size_t scaleSize);
-		GraphBuilder(size_t xAxis, size_t yAxis, size_t scaleSize);
-		GraphBuilder(Grid grid);
-		void draw(sf::RenderWindow* window);
-		sf::Vector2u getOrigin();
-		void setOrigin(size_t rows, size_t columns);
+		GraphBuilder(sf::RenderWindow* window, size_t xAxis, size_t yAxis, size_t scaleSize);
+		GraphBuilder(sf::RenderWindow* window, Grid grid);
+		void draw();
+		sf::Vector2i getOrigin();
+		void setOrigin(int rows, int columns);
 		void applyScale(double multiplier);
 		void zoom(int delta);
-		void fillWindow(sf::RenderWindow* window);
+		void move(sf::Vector2i delta);
 	};
 }
