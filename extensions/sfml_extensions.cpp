@@ -97,8 +97,8 @@ namespace esf
 		delta = this->grid.elementSize / 10000.0;
 
 		origin = sf::Vector2i(
-			grid.position.x + (int)grid.elementSize * std::ceil(grid.getRows() / 2.0),
-			grid.position.y + (int)grid.elementSize * std::ceil(grid.getColumns() / 2.0)
+			grid.position.x + grid.elementSize * std::ceil(grid.getRows() / 2.0),
+			grid.position.y + grid.elementSize * std::ceil(grid.getColumns() / 2.0)
 		);
 
 		move(-origin + sf::Vector2i(window->getSize().x / 2, window->getSize().y / 2));
@@ -164,15 +164,15 @@ namespace esf
 
 	sf::Vector2i GraphBuilder::getOrigin()
 	{
-		int x = (origin.x - grid.position.x) / (int)grid.elementSize;
-		int y = (origin.y - grid.position.y) / (int)grid.elementSize;
+		int x = (origin.x - grid.position.x) / grid.elementSize;
+		int y = (origin.y - grid.position.y) / grid.elementSize;
 		return sf::Vector2i(x, y);
 	}
 
 	void GraphBuilder::setOrigin(int rows, int columns)
 	{
-		int x = grid.position.x + (int)grid.elementSize * rows;
-		int y = grid.position.y + (int)grid.elementSize * columns;
+		int x = grid.position.x + grid.elementSize * rows;
+		int y = grid.position.y + grid.elementSize * columns;
 		origin = sf::Vector2i(x, y);
 	}
 
@@ -199,11 +199,27 @@ namespace esf
 		grid.elementSize += delta;
 
 		setOrigin(tmpOrigin.x, tmpOrigin.y);
+
+		if (grid.elementSize * grid.getRows() < window->getSize().x
+	     || grid.elementSize * grid.getColumns() < window->getSize().y)
+		{
+			sf::Vector2u newSize(
+				window->getSize().x / grid.elementSize + 1,
+				window->getSize().y / grid.elementSize + 1);
+
+			Grid newGrid(newSize, grid.elementSize);
+			newGrid.lineColor = grid.lineColor;
+			newGrid.position = grid.position;
+			grid = newGrid;
+		}
+		move(sf::Vector2i(0, 0));
 	}
 
 	void GraphBuilder::move(sf::Vector2i delta)
 	{
 		grid.position += delta;
 		origin += delta;
+		grid.position.x = grid.position.x % grid.elementSize - grid.elementSize;
+		grid.position.y = grid.position.y % grid.elementSize - grid.elementSize;
 	}
 }

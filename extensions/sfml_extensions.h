@@ -26,7 +26,7 @@ namespace esf
 	public:
 		sf::Vector2i position = { 0, 0 };
 		sf::Color lineColor = sf::Color::White;
-		size_t elementSize;
+		int elementSize;
 
 		Grid(size_t columns, size_t rows, size_t elementSize);
 		Grid(sf::Vector2u size, size_t elementSize);
