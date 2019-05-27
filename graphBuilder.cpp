@@ -76,6 +76,17 @@ public:
 		}
 		mousePos = newMousePos;
 	}
+	void wheelMoved(sf::Event::MouseWheelEvent wheel)
+	{
+		if (wheel.delta > 0)
+		{
+			builder->zoom(zoomDelta);
+		}
+		else
+		{
+			builder->zoom(-zoomDelta);
+		}
+	}
 };
 
 int main()
@@ -86,7 +97,7 @@ int main()
 	size_t size = 100;
 
 	GraphBuilder builder(&window, 100, 100, size);
-	builder.functions.emplace_back([](double x) { return sin(x) * x; });
+	builder.functions.emplace_back([](double x) { return x * sin(x); });
 	builder.displayGrid = true;
 	builder.lineColor = sf::Color::Cyan;
 
@@ -110,6 +121,10 @@ int main()
 			if (event.type == sf::Event::MouseMoved)
 			{
 				wrapper.checkMouseEvent(event.mouseMove);
+			}
+			if (event.type == sf::Event::MouseWheelMoved)
+			{
+				wrapper.wheelMoved(event.mouseWheel);
 			}
 			if (event.type == sf::Event::MouseButtonPressed)
 			{
