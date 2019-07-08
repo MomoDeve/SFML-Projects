@@ -1,7 +1,5 @@
 #include "sfml_extensions.h"
-#include <thread>
 #include <iostream>
-#include <mutex>
 #include <algorithm>
 #include <map>
 #include <fstream>
@@ -17,7 +15,6 @@
 #define FRAMERATE 60
 #define LOG true
 
-//SFML Extensions Library required
 using namespace std;
 
 struct node
